@@ -33,7 +33,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Manage Expenses"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@drawable/btn_custom"
+        app:backgroundTint="@null"/>
 
     <Button
         android:id="@+id/ah_btn_mng_budgets"
@@ -41,7 +43,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="Manage Budgets"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@drawable/btn_custom"
+        app:backgroundTint="@null"/>
 
     <Button
         android:id="@+id/ah_btn_logout"
