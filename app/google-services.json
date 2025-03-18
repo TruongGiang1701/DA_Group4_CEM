@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1033686250003",
+    "project_id": "campusexpensemanager-3d517",
+    "storage_bucket": "campusexpensemanager-3d517.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033686250003:android:a8334f8743b75efaedc5e6",
+        "android_client_info": {
+          "package_name": "com.example.campusexpensemanager"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7Jm_GACEMG4WXmuhpTYPlsjMo4Q4MfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

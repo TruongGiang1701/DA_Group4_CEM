@@ -1,10 +1,11 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.campusexpensemanager"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.campusexpensemanager"
@@ -32,7 +33,10 @@ android {
 }
 
 dependencies {
-
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-auth:23.2.0")
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation("com.google.firebase:firebase-analytics")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
