@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center"
+    android:id="@+id/main">
+
+    <TextView
+        android:id="@+id/ah_tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_marginBottom="24dp"
+        android:text="Campus Expense Manager"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/ah_tv_welcome"
+        android:layout_width="299dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="24dp"
+        android:textSize="16sp"
+        android:textStyle="bold|italic" />
+
+    <Button
+        android:id="@+id/ah_btn_mng_expenses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Manage Expenses"
+        android:textStyle="bold"
+        android:background="@drawable/btn_custom"
+        app:backgroundTint="@null"/>
+
+    <Button
+        android:id="@+id/ah_btn_mng_budgets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Manage Budgets"
+        android:textStyle="bold"
+        android:background="@drawable/btn_custom"
+        app:backgroundTint="@null"/>
+
+    <Button
+        android:id="@+id/ah_btn_logout"
+        android:layout_width="209dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#F44336"
+        android:text="Logout"
+        android:textStyle="bold" />
+
+</LinearLayout>
