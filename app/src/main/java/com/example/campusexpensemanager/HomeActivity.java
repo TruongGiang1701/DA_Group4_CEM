@@ -4,16 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -21,7 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeActivity extends AppCompatActivity {
     private TextView tvWelcome;
-    private Button btnMngExpenses, btnMngBudgets, btnLogout;
+    private LinearLayout btnMngExpenses, btnMngBudgets, btnRecurringExpenses, btnReports, btnFeedback, btnLogout;
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private static final String TAG = "HomeActivity";
@@ -43,71 +41,95 @@ public class HomeActivity extends AppCompatActivity {
         tvWelcome = findViewById(R.id.ah_tv_welcome);
         btnMngExpenses = findViewById(R.id.ah_btn_mng_expenses);
         btnMngBudgets = findViewById(R.id.ah_btn_mng_budgets);
+        btnRecurringExpenses = findViewById(R.id.ah_btn_re_expenses);
+        btnReports = findViewById(R.id.ah_btn_report);
+        btnFeedback = findViewById(R.id.ah_btn_feedback);
         btnLogout = findViewById(R.id.ah_btn_logout);
 
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Log.d(TAG, "currentUser UID: " + currentUser.getUid());
 
         if (currentUser == null) {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
-        }
-        else {
-            db.collection("admins").document(currentUser.getUid()).get()
-                    .addOnCompleteListener(task -> {
-                        Log.d(TAG, "onComplete called");
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            Log.d(TAG, "document: " + document);
-                            if(document != null) {
-                                Log.d(TAG, "document.exists(): " + document.exists());
-
-                                String role = "Student";
-                                if (document.exists()) {
-                                    role = "Admin";
-                                }
-                                tvWelcome.setText("Welcome, " + currentUser.getEmail() + "! (Role: " + role + ")");
-
-                            } else {
-                                Log.d(TAG,"Document is null");
-                                tvWelcome.setText("Welcome, " + currentUser.getEmail() + "!");
-                            }
-
-                        } else {
-                            Log.d(TAG, "Error getting document: ", task.getException());
-                            tvWelcome.setText("Welcome, " + currentUser.getEmail() + "!");
-                        }
-                    });
-
+        } else {
+            fetchUserRole(currentUser);
         }
 
-        btnMngExpenses.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  Intent intent = new Intent(HomeActivity.this, ManageExpensesActivity.class);
-                //  startActivity(intent);
-                Toast.makeText(HomeActivity.this, "This functionality is not yet implemented.", Toast.LENGTH_SHORT).show();            }
-        });
+        btnMngExpenses.setOnClickListener(this::onManageExpensesClick);
+        btnMngBudgets.setOnClickListener(this::onManageBudgetsClick);
+        btnRecurringExpenses.setOnClickListener(this::onRecurringExpensesClick);
+        btnReports.setOnClickListener(this::onReportClick);
+        btnFeedback.setOnClickListener(this::onFeedbackClick);
+        btnLogout.setOnClickListener(this::onLogoutClick);
+    }
 
-        btnMngBudgets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  Intent intent = new Intent(HomeActivity.this, ManageBudgetsActivity.class);
-                //  startActivity(intent);
-                Toast.makeText(HomeActivity.this, "This functionality is not yet implemented.", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void fetchUserRole(FirebaseUser currentUser) {
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mAuth.signOut();
-                Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+        db.collection("roles").document(currentUser.getUid()).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    String role = "Student";
+                    if (documentSnapshot.exists()) {
+                        role = documentSnapshot.getString("role");
+                    }
+                    fetchAndDisplayUserInfo(currentUser, role);
 
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error getting user role", e);
+                    tvWelcome.setText("Welcome, " + currentUser.getEmail() + "!");
+                });
+    }
+    private void fetchAndDisplayUserInfo(FirebaseUser currentUser, String role) {
+
+        db.collection("users").document(currentUser.getUid()).get()
+                .addOnSuccessListener(userDoc -> {
+                    String displayName = currentUser.getEmail();
+                    if (userDoc.exists() && userDoc.getString("name") != null) {
+                        displayName = userDoc.getString("name");
+                    }
+
+                    tvWelcome.setText("Welcome, " + displayName + "! (Role: " + role + ")");
+
+                    if ("Student".equals(role)) {
+                        btnFeedback.setVisibility(View.GONE);
+                    } else {
+                        btnFeedback.setVisibility(View.VISIBLE);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error getting user info", e);
+                    tvWelcome.setText("Welcome, " + currentUser.getEmail() + "! (Role: " + role +")");
+                    if ("Student".equals(role)) {
+                        btnFeedback.setVisibility(View.GONE);
+                    } else {
+                        btnFeedback.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+    public void onManageExpensesClick(View view) {
+        startActivity(new Intent(this, ManageExpensesActivity.class));
+    }
+
+    public void onManageBudgetsClick(View view) {
+        startActivity(new Intent(this, ManageBudgetsActivity.class));
+    }
+
+    public void onRecurringExpensesClick(View view) {
+        startActivity(new Intent(this, RecurringExpensesActivity.class));
+    }
+
+    public void onReportClick(View view) {
+        startActivity(new Intent(this, ReportActivity.class));
+    }
+
+    public void onFeedbackClick(View view) {
+        startActivity(new Intent(this, FeedbackActivity.class));
+    }
+
+    public void onLogoutClick(View view) {
+        mAuth.signOut();
+        startActivity(new Intent(this, LoginActivity.class));
+        finish();
     }
 }
